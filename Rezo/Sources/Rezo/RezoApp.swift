@@ -6,6 +6,12 @@ struct RezoApp: App {
     @StateObject private var monitor = BoxMonitor()
 
     init() {
+        // `Rezo --snapshot <dir>`: render the README screenshots and exit.
+        if let i = CommandLine.arguments.firstIndex(of: "--snapshot") {
+            let args = CommandLine.arguments
+            Screenshots.render(to: i + 1 < args.count ? args[i + 1] : ".")
+            exit(0)
+        }
         // `Rezo --check`: poll for a few seconds, print what the panel would show, exit.
         if CommandLine.arguments.contains("--check") {
             let m = BoxMonitor()

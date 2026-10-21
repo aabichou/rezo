@@ -7,9 +7,13 @@
 
 A macOS menu bar app for the **ZLT X31** 5G router, sold by Ooredoo as the "Ooredoo 5G" box. It shows signal, network type and battery in the menu bar. Click it for the full picture: LTE and 5G signal quality, bands, live throughput, data used, CPU, temperature, connected Wi-Fi clients and a network-mode switch (for example, 4G only to save battery).
 
-```
-▂▄▆ 4G+ 72%
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshot-dark.png">
+    <img src="docs/screenshot-light.png" width="432" alt="Rezo's menu bar item showing 5G and 72% battery, with its panel open: battery drain estimate, LTE and 5G signal quality, throughput, data used, CPU, temperature, Wi-Fi clients and network mode">
+  </picture>
+</p>
+<p align="center"><sub>Screenshot with sample data.</sub></p>
 
 The repo also contains a small Python client (`box_client.py`) and a map of the box's web API (`docs/api-reference.html`), in case you want to build your own dashboard.
 
@@ -17,9 +21,13 @@ The repo also contains a small Python client (`box_client.py`) and a map of the 
 
 ## Compatibility
 
+<img src="docs/device.jpg" align="right" width="200" alt="The ZLT X31 5G box: a white-framed black slab with signal, battery, Wi-Fi and message lights and a power button">
+
 Tested on a ZLT X31C running firmware 1.0.0.24 (config X31-TN0303, Ooredoo Tunisia). Other ZLT boxes that use the same web UI may work: it posts JSON to `/cgi-bin/http.cgi`, and its login page saves `username_sunsea` in your browser storage. If you try one, please open an issue with the model and firmware.
 
 Rezo needs macOS 14 or later.
+
+<br clear="right">
 
 ## Install
 
@@ -113,9 +121,11 @@ git tag v0.2.0 && git push origin v0.2.0
 
 The [release workflow](.github/workflows/release.yml) then builds a universal app zip and a Homebrew bottle, publishes both to a GitHub Release, and updates the formula in [aabichou/homebrew-tap](https://github.com/aabichou/homebrew-tap).
 
-## App icon
+## Icon and screenshots
 
 `Rezo/scripts/make-icon.swift` draws the icon with CoreGraphics. To regenerate `Rezo/Resources/AppIcon.icns` and `docs/icon.png` after changing it, run `Rezo/scripts/make-icns.sh`.
+
+The README screenshots are rendered from the real panel with fixed sample data, so they never show a real cell ID, IP address or device name. To regenerate them after a UI change, run `Rezo/.build/release/Rezo --snapshot docs` from the repo root, after building.
 
 ## Disclaimer
 

@@ -128,6 +128,21 @@ final class BoxMonitor: ObservableObject {
         if autoDetect { Task { await discover(force: true) } }
     }
 
+    /// A monitor frozen on fixed readings, for screenshots. Never polls the box.
+    init(preview: Snapshot, drainPerHour: Double?, model: String) {
+        host = Self.defaultHost
+        username = Self.defaultUser
+        detailedEnabled = true
+        autoDetect = true
+        isConfigured = true
+        client = BoxClient(host: Self.defaultHost)
+        snap = preview
+        lastUpdate = Date()
+        detail = .active
+        self.drainPerHour = drainPerHour
+        self.model = model
+    }
+
     /// Looks for the box (gateway first, then common addresses) and switches to it.
     func discover(force: Bool = false) async {
         guard !discovering else { return }
