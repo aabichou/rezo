@@ -5,7 +5,7 @@ import Security
 enum Keychain {
     private static let query: [String: Any] = [
         kSecClass as String: kSecClassGenericPassword,
-        kSecAttrService as String: "BoxBar",
+        kSecAttrService as String: "Rezo",
         kSecAttrAccount as String: "box-admin",
     ]
 

@@ -2,11 +2,11 @@ import AppKit
 import SwiftUI
 
 @main
-struct BoxBarApp: App {
+struct RezoApp: App {
     @StateObject private var monitor = BoxMonitor()
 
     init() {
-        // `BoxBar --check`: poll for a few seconds, print what the panel would show, exit.
+        // `Rezo --check`: poll for a few seconds, print what the panel would show, exit.
         if CommandLine.arguments.contains("--check") {
             let m = BoxMonitor()
             let end = Date().addingTimeInterval(8)

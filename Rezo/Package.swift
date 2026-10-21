@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "BoxBar",
+    name: "Rezo",
     platforms: [.macOS(.v14)],
     targets: [
         .executableTarget(
-            name: "BoxBar",
-            path: "Sources/BoxBar",
+            name: "Rezo",
+            path: "Sources/Rezo",
             swiftSettings: [.swiftLanguageMode(.v5)]
         )
     ]

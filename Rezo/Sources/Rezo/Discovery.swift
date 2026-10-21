@@ -7,7 +7,7 @@ enum Discovery {
     static let commonHosts = ["192.168.100.1", "192.168.0.1", "192.168.1.1", "192.168.8.1", "192.168.10.1"]
 
     static func gateway() -> String? {
-        guard let store = SCDynamicStoreCreate(nil, "BoxBar" as CFString, nil, nil),
+        guard let store = SCDynamicStoreCreate(nil, "Rezo" as CFString, nil, nil),
               let ipv4 = SCDynamicStoreCopyValue(store, "State:/Network/Global/IPv4" as CFString) as? [String: Any]
         else { return nil }
         return ipv4["Router"] as? String
