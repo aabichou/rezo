@@ -15,7 +15,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 <dict>
   <key>CFBundleName</key><string>Rezo</string>
   <key>CFBundleDisplayName</key><string>Rezo</string>
-  <key>CFBundleIdentifier</key><string>io.github.adamab48.rezo</string>
+  <key>CFBundleIdentifier</key><string>io.github.aabichou.rezo</string>
   <key>CFBundleExecutable</key><string>Rezo</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
