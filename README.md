@@ -23,15 +23,33 @@ Rezo needs macOS 14 or later.
 
 ## Install
 
-Build from source. You need Xcode or the Xcode command line tools (`xcode-select --install`).
+With [Homebrew](https://brew.sh):
 
 ```sh
-git clone <this repo>
-cd <repo>/Rezo
+brew install aabichou/tap/rezo
+brew services start rezo     # launch now and at every login
+```
+
+On Apple Silicon Macs with macOS 14 or later, this installs a prebuilt app in a few seconds. Other Macs build it from source, which needs the Xcode command line tools.
+
+Homebrew keeps the app in its own folder. Run `rezo` to open it, or `ln -sf "$(brew --prefix)/opt/rezo/Rezo.app" /Applications/Rezo.app` to also see it in Spotlight and Launchpad. To update, run `brew upgrade rezo`.
+
+<details>
+<summary>Other ways to install</summary>
+
+**Download:** each [release](https://github.com/aabichou/rezo/releases) has a `Rezo-<version>.zip`. The app isn't notarized by Apple, so on first launch macOS blocks it. Open System Settings → Privacy & Security and click **Open Anyway**.
+
+**Build from source** (needs Xcode or the command line tools):
+
+```sh
+git clone https://github.com/aabichou/rezo.git
+cd rezo/Rezo
 ./build.sh                       # produces Rezo.app
 mv Rezo.app /Applications/
 open /Applications/Rezo.app
 ```
+
+</details>
 
 ### First run
 
@@ -71,7 +89,8 @@ A new login immediately ends the previous session. While detailed stats are on, 
 ## Troubleshooting
 
 ```sh
-/Applications/Rezo.app/Contents/MacOS/Rezo --check
+rezo --check      # Homebrew install
+/Applications/Rezo.app/Contents/MacOS/Rezo --check   # manual install
 ```
 
 This polls the box for 8 seconds using your saved settings and prints everything the panel would show. It doesn't print the password.
@@ -83,6 +102,16 @@ BOX_PASSWORD=... python3 box_client.py          # one JSON snapshot
 ```
 
 `BOX_URL` and `BOX_USER` override the defaults (`https://192.168.100.1`, `admin`). Use `Box().get(cmd)`, `Box().post(cmd, **params)` and `Box().set_network_mode("4")` from your own scripts.
+
+## Releasing
+
+Push a version tag:
+
+```sh
+git tag v0.2.0 && git push origin v0.2.0
+```
+
+The [release workflow](.github/workflows/release.yml) then builds a universal app zip and a Homebrew bottle, publishes both to a GitHub Release, and updates the formula in [aabichou/homebrew-tap](https://github.com/aabichou/homebrew-tap).
 
 ## App icon
 

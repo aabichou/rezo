@@ -1,0 +1,93 @@
+# Push a tag like v0.2.0 to release:
+#   1. builds a universal Rezo.app zip and creates the GitHub Release
+#   2. builds a Homebrew bottle from the tap formula and attaches it
+#   3. updates aabichou/homebrew-tap (url, sha256, bottle block)
+#
+# Needs the secret TAP_DEPLOY_KEY: a deploy key with write access to the tap.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # Oldest supported macOS: newer macOS versions can pour a bottle built here.
+    runs-on: macos-14
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+      HOMEBREW_NO_ANALYTICS: "1"
+      HOMEBREW_NO_INSTALL_FROM_API: "1"
+      GH_TOKEN: ${{ github.token }}
+      TAP: aabichou/tap
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+
+      - name: Build universal app zip
+        run: |
+          UNIVERSAL=1 Rezo/build.sh
+          ditto -c -k --keepParent Rezo/Rezo.app "Rezo-$VERSION.zip"
+
+      - name: Create GitHub Release
+        run: |
+          gh release create "$GITHUB_REF_NAME" "Rezo-$VERSION.zip" \
+            --title "Rezo $VERSION" --generate-notes
+
+      - name: Point the formula at this tag
+        run: |
+          TARBALL="https://github.com/${GITHUB_REPOSITORY}/archive/refs/tags/${GITHUB_REF_NAME}.tar.gz"
+          SHA=$(curl -fsSL "$TARBALL" | shasum -a 256 | cut -d' ' -f1)
+          brew tap "$TAP"
+          FORMULA="$(brew --repository "$TAP")/Formula/rezo.rb"
+          # Only the top-level url/sha256 lines (2-space indent), not the bottle block.
+          sed -i '' -E \
+            -e "s|^  url \".*\"|  url \"$TARBALL\"|" \
+            -e "s|^  sha256 \".*\"|  sha256 \"$SHA\"|" \
+            "$FORMULA"
+          # Drop the previous release's bottle block; brew bottle writes a fresh one.
+          ruby -e 'p = ARGV[0]; s = File.read(p); File.write(p, s.sub(/\n  bottle do\n.*?\n  end\n/m, "\n"))' "$FORMULA"
+          cat "$FORMULA"
+
+      - name: Build bottle
+        run: |
+          brew install --build-bottle "$TAP/rezo"
+          brew test "$TAP/rezo"
+          brew bottle --json \
+            --root-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}" \
+            "$TAP/rezo"
+          # brew writes "rezo--X.tag.bottle.tar.gz" locally; the URL uses "rezo-X.tag...".
+          for json in rezo--*.json; do
+            local_name=$(jq -r '.[].bottle.tags[].local_filename' "$json")
+            remote_name=$(jq -r '.[].bottle.tags[].filename' "$json")
+            mv "$local_name" "$remote_name"
+            gh release upload "$GITHUB_REF_NAME" "$remote_name"
+          done
+
+      - name: Publish formula to the tap
+        env:
+          TAP_DEPLOY_KEY: ${{ secrets.TAP_DEPLOY_KEY }}
+        run: |
+          brew bottle --merge --write --no-commit rezo--*.json
+          TAP_DIR="$(brew --repository "$TAP")"
+          mkdir -p ~/.ssh
+          printf '%s\n' "$TAP_DEPLOY_KEY" > ~/.ssh/tap_key
+          chmod 600 ~/.ssh/tap_key
+          cd "$TAP_DIR"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/rezo.rb
+          git commit -m "rezo $VERSION"
+          git remote set-url origin git@github.com:aabichou/homebrew-tap.git
+          GIT_SSH_COMMAND="ssh -i ~/.ssh/tap_key -o StrictHostKeyChecking=accept-new" \
+            git push origin HEAD:main
