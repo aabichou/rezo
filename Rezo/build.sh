@@ -23,6 +23,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundleVersion</key><string>1</string>
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>LSUIElement</key><true/>
+  <key>NSHumanReadableCopyright</key><string>© 2026 Adem Abichou. MIT License. Independent project, not affiliated with Ooredoo, ZLT, ZTE or Quectel.</string>
   <key>NSLocalNetworkUsageDescription</key><string>Rezo reads signal, battery and traffic stats from your 5G box on the local network.</string>
 </dict>
 </plist>

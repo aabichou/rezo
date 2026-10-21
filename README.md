@@ -1,7 +1,7 @@
 <p align="center"><img src="docs/icon.png" width="128" alt="Rezo icon: the Tanit sign broadcasting signal waves"></p>
 
 <h1 align="center">Rezo</h1>
-<p align="center"><em>Famma rézo wala ma famma?</em> (Is there signal or not?)</p>
+<p align="center"><em>Famma rézo wala la?</em> (Is there signal or not?)</p>
 
 *Rezo* is Tunisian for mobile signal ("réseau"). The icon is the Tanit sign of Carthage, broadcasting.
 
@@ -13,7 +13,7 @@ A macOS menu bar app for the **ZLT X31** 5G router, sold by Ooredoo as the "Oore
 
 The repo also contains a small Python client (`box_client.py`) and a map of the box's web API (`docs/api-reference.html`), in case you want to build your own dashboard.
 
-> Not affiliated with Ooredoo or ZLT. Use at your own risk.
+> **Independent project.** Rezo is not affiliated with, endorsed by, or sponsored by Ooredoo, ZLT, ZTE or Quectel. See the [disclaimer](#disclaimer).
 
 ## Compatibility
 
@@ -87,6 +87,16 @@ BOX_PASSWORD=... python3 box_client.py          # one JSON snapshot
 ## App icon
 
 `Rezo/scripts/make-icon.swift` draws the icon with CoreGraphics. To regenerate `Rezo/Resources/AppIcon.icns` and `docs/icon.png` after changing it, run `Rezo/scripts/make-icns.sh`.
+
+## Disclaimer
+
+Rezo is an independent, unofficial project. It is not affiliated with, endorsed by, sponsored by or connected to Ooredoo, ZLT, ZTE Corporation or Quectel Wireless Solutions, or any of their subsidiaries.
+
+Ooredoo, ZLT, ZTE, Quectel and any related names, logos and product names are trademarks of their respective owners. They appear here only to describe which devices Rezo works with. No Ooredoo or ZLT logos or artwork are used. The app icon is original artwork based on the Tanit sign, a historical public-domain symbol.
+
+Rezo talks to your own device through the same local web interface its built-in web page uses. It doesn't modify firmware or bypass any security, and it doesn't connect to any operator service. Changing device settings, such as the network mode, is your responsibility and may be subject to your operator's terms of service.
+
+The software is provided "as is", without warranty of any kind. See [LICENSE](LICENSE).
 
 ## License
 
