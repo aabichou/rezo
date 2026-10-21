@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZLT X31 API Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ef;--panel:#fffdf8;--ink:#1d1f22;--muted:#5f646b;--line:#e2ddd2;
+  --accent:#b4232b;--accent-soft:#f6e3e1;--ok:#2f6f4f;--ok-soft:#e1efe6;--warn:#8a5a00;--warn-soft:#f6ecd6;
+  --code:#f0ece3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141516;--panel:#1c1d1f;--ink:#e9e7e2;--muted:#9a9ea4;--line:#2e3033;
+    --accent:#ff6b6f;--accent-soft:#3a1f20;--ok:#7cc79d;--ok-soft:#1d2e24;--warn:#e7b65a;--warn-soft:#33291a;
+    --code:#242528;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141516;--panel:#1c1d1f;--ink:#e9e7e2;--muted:#9a9ea4;--line:#2e3033;
+  --accent:#ff6b6f;--accent-soft:#3a1f20;--ok:#7cc79d;--ok-soft:#1d2e24;--warn:#e7b65a;--warn-soft:#33291a;
+  --code:#242528;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:40px 16px 80px}
+h1{font:500 34px/1.15 "IBM Plex Serif",Georgia,serif;margin:0 0 8px;letter-spacing:-.01em}
+h2{font:600 13px/1 "IBM Plex Sans";text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin:48px 0 14px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 6px}
+p{margin:0 0 12px}
+.lede{color:var(--muted);font-size:17px;max-width:68ch}
+code,pre,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:13px}
+code{background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:14px 16px;border-radius:8px;overflow-x:auto;margin:0 0 14px;line-height:1.5}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:3px 11px;font-size:13px;color:var(--muted)}
+.chip b{color:var(--ink);font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.card .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.card .v{font:500 22px/1.3 "IBM Plex Mono";margin-top:2px}
+.card p{font-size:13.5px;color:var(--muted);margin:6px 0 0}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin:0 0 14px}
+.note.red{border-color:var(--accent);background:var(--accent-soft)}
+.note.green{border-color:var(--ok);background:var(--ok-soft)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);margin-bottom:14px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td.c{font-family:"IBM Plex Mono";white-space:nowrap}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;font-weight:600;letter-spacing:.03em;white-space:nowrap}
+.t-open{background:var(--accent-soft);color:var(--accent)}
+.t-auth{background:var(--ok-soft);color:var(--ok)}
+.t-hist{background:var(--warn-soft);color:var(--warn)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;counter-reset:s}
+.flow .card{position:relative;padding-top:30px}
+.flow .card::before{counter-increment:s;content:counter(s);position:absolute;top:10px;left:16px;font:600 12px "IBM Plex Mono";color:var(--accent)}
+ul{padding-left:20px;margin:0 0 12px}
+li{margin:3px 0}
+.themebtn{position:fixed;top:12px;right:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 12px;font:13px "IBM Plex Sans";cursor:pointer}
+@media (max-width:600px){h1{font-size:27px}main{padding-top:56px}}
+</style>
+</head>
+<body>
+<button class="themebtn" id="tb" type="button">Theme</button>
+<main>
+<h1>ZLT X31 web API, mapped for a monitoring dashboard</h1>
+<p class="lede">I reverse-engineered the Ooredoo-branded ZLT X31C (5G NSA CPE, Quectel RG520N modem) from its Vue web UI and probed it live on 21 Oct 2026. Below: how auth works, which commands are safe to poll, what each returns, and the traps.</p>
+<div class="meta">
+  <span class="chip">Host <b>192.168.100.1</b></span>
+  <span class="chip">Firmware <b>1.0.0.24</b> (shown as 1.0.0.16)</span>
+  <span class="chip">Config <b>X31-TN0303_1.0.10</b></span>
+  <span class="chip">Commands defined in UI <b>353</b></span>
+  <span class="chip">Probed live <b>~60</b></span>
+</div>
+
+<h2>Transport</h2>
+<p>There is a single endpoint. Every request is a JSON <code>POST</code> to <code>/cgi-bin/http.cgi</code> over HTTPS with a self-signed certificate. The operation is a numeric <code>cmd</code>. Reads put <code>"method":"GET"</code> <em>in the body</em>. Writes use <code>"method":"POST"</code> and also send the login <code>token</code>.</p>
+<pre>POST https://192.168.100.1/cgi-bin/http.cgi
+Content-Type: application/json
+
+{"cmd": 1002, "method": "GET", "sessionId": "&lt;64 hex&gt;"}</pre>
+<p>Every value comes back as a <strong>string</strong>, numbers included, and fields with no data are <code>""</code>. Errors look like <code>{"success":false,"message":"…"}</code>. You will see these messages:</p>
+<div class="tablewrap"><table>
+<tr><th>message</th><th>meaning</th></tr>
+<tr><td class="c">NO_AUTH</td><td>The session is missing, or another login replaced it. Log in again.</td></tr>
+<tr><td class="c">LOGIN_TIMEOUT</td><td>The session expired from idleness. Log in again.</td></tr>
+<tr><td class="c">LIMITED_ACCESS</td><td>The command is reserved for a higher account level than <code>admin</code> (level 3). This covers SMS, band lock, PLMN lock and cell lock.</td></tr>
+<tr><td class="c">Parameters of the CMD can't identify</td><td>The command doesn't exist on this build, or it needs a <code>subcmd</code>.</td></tr>
+<tr><td class="c">NOT SUPPORT</td><td>The feature is compiled out (mesh topology, for example).</td></tr>
+<tr><td class="c">empty body / connection reset</td><td>The feature is absent on this model. Treat it as unsupported.</td></tr>
+</table></div>
+
+<h2>Authentication</h2>
+<div class="flow">
+  <div class="card"><b>Get a token</b><p><code>{"cmd":232,"method":"GET"}</code> returns <code>token</code>. No auth is needed.</p></div>
+  <div class="card"><b>Hash</b><p><code>passwd = sha256(token + password)</code>, as lowercase hex.</p></div>
+  <div class="card"><b>Log in</b><p><code>cmd 100</code>, POST, with <code>username</code>, <code>passwd</code>, <code>token</code> and <code>isAutoUpgrade:"0"</code>.</p></div>
+  <div class="card"><b>Use the session</b><p>The response carries a <code>sessionId</code>. Send it on every call.</p></div>
+</div>
+<div class="note red"><b>Only one session can exist.</b> I verified this live: a new login immediately invalidates the previous <code>sessionId</code>. A poller that logs in will log you out of the browser UI, and opening the UI will break the poller. Build the poller to re-login on <code>NO_AUTH</code>, and avoid authenticated polling while someone is using the UI.</div>
+<p id="idle"><b>Idle timeout:</b> The session stayed valid after 5 minutes with no requests; I stopped measuring there. Either way, re-login on <code>LOGIN_TIMEOUT</code>/<code>NO_AUTH</code> and the client handles it.</p>
+<p>Failed logins are rate-limited. After 3 bad passwords the box locks you out for a cooldown, and <code>cmd 232</code> reports it in <code>netx_login_time</code>.</p>
+
+<h2>No-auth endpoints</h2>
+<div class="note green">These answer with <code>sessionId:""</code>, so a poller can read signal and status <b>without taking the session</b>, which sidesteps the single-session problem for the most important metrics.</div>
+<div class="tablewrap"><table>
+<tr><th>cmd</th><th>name</th><th>useful fields</th></tr>
+<tr><td class="c">133</td><td>ROUTER_INFO</td><td>RSRP/RSRQ/SINR/RSSI (LTE + NR), CELL_ID, PCI, bands, bandwidth, CQI, MCS, WAN IPv4/IPv6, DNS, APN, <code>wan_rx_bytes</code>/<code>wan_tx_bytes</code>, uptime, ICCID, IMSI, IMEI</td></tr>
+<tr><td class="c">113</td><td>GET_SYS_STATUS</td><td><code>network_type_str</code>, <code>signal_lvl</code> (0–5), <code>sim_status</code>, <code>network_status</code>, <code>batteryCapacity</code>/<code>batteryCharge</code>, Wi-Fi radio switches, roaming, flight mode, uptime</td></tr>
+<tr><td class="c">1008</td><td>GETINITINFO</td><td>Branding only (theme, logo, title)</td></tr>
+<tr><td class="c">232</td><td>GET_NEXT_LOGIN_TIME</td><td>Login token and lockout countdown</td></tr>
+</table></div>
+<div class="note red">The flip side: anyone on the LAN can read your IMSI, ICCID, IMEI and WAN IP from <code>cmd 133</code> without a password. Keep that in mind if guests use your Wi-Fi.</div>
+
+<h2>Authenticated monitoring endpoints</h2>
+<div class="tablewrap"><table>
+<tr><th>cmd</th><th>name</th><th>what you get</th></tr>
+<tr><td class="c">1002</td><td>GETWANINFO <span class="tag t-auth">best single call</span></td><td>Everything in 133, plus <code>flow_dl</code>/<code>flow_ul</code> (session traffic, MB), <code>dl_mon_flow</code>/<code>ul_mon_flow</code>/<code>mon_total_flow</code> (monthly, MB), <code>data_connect_time</code> (s), <code>onlineTime</code>, <code>tx_power</code>, <code>mimo_status</code>, <code>rank_4g</code>/<code>rank_5g</code>, <code>max_ul_qam</code>, <code>ENODEBID</code>, <code>tac_4g</code>, <code>ECGI</code>, <code>network_operator</code></td></tr>
+<tr><td class="c">1001</td><td>GETDEVICEINFO</td><td><code>cpu_usage</code> (%), <code>cpuload</code> ("1m, 5m, 15m"), <code>memory</code> ("total, free, cache, …" kB), <code>device_temperature</code> (°C), <code>flash_total</code>/<code>flash_availeble</code>, <code>systime</code>, <code>uptime</code>, firmware and modem versions, IMEI, ICCID</td></tr>
+<tr><td class="c">1005</td><td>GETLOOPINFO</td><td>What the UI itself polls: <code>battery_capacity</code>, <code>battery_charge_status</code>, <code>network_status</code>, <code>networkState</code>, <code>sms_unread</code>, <code>roam_status</code>, <code>ipClash</code>, <code>flowLimitFlag</code>, Wi-Fi switches</td></tr>
+<tr><td class="c">1000</td><td>DEVICELISTINFO</td><td><code>dhcp_list_info[]</code> (mac, ip, hostname, interface, lease expiry, ipv6), plus <code>wlan24g_wifi_info[]</code> and <code>wlan5g_wifi_info[]</code> (mac, <b>rssi</b>, txrate/rxrate Mbps, ssid, ip, user)</td></tr>
+<tr><td class="c">223 · 224 · 225</td><td>DHCP / 2.4G / 5G clients</td><td>The same lists as 1000, split out</td></tr>
+<tr><td class="c">1006</td><td>GETWIFIINGO</td><td>Pass <code>type:"0"</code> (2.4G) or <code>"1"</code> (5G): radio enabled, channel, bandwidth, mode, country, guest SSIDs</td></tr>
+<tr><td class="c">209 · 210</td><td>WIFI_INFO / WIFI5G_INFO</td><td>Current channel per radio (auto-selected)</td></tr>
+<tr><td class="c">18</td><td>FLOW_INFO</td><td>LAN-side <code>rxBytes</code>/<code>txBytes</code>/packets (byte-accurate)</td></tr>
+<tr><td class="c">1007</td><td>GETCHECKINGO</td><td><code>mount_info[]</code> (df output)</td></tr>
+<tr><td class="c">218 · 226</td><td>NETWORKSET_MODE</td><td>Network mode, 5G on/off, LTE and NR CA flags, flight mode, roaming</td></tr>
+<tr><td class="c">337</td><td>TRAFFIC_LIMIT_SETTING</td><td>Data cap switch, size, billing start day and warning % (for a quota gauge)</td></tr>
+<tr><td class="c">134</td><td>QUERY_SIM_STATUS</td><td>PIN/PUK lock state and retries left</td></tr>
+<tr><td class="c">208</td><td>LAN_INFO</td><td>LAN IP/mask/MAC and DHCP range</td></tr>
+<tr><td class="c">43</td><td>DEVICE_VERSION_INFO</td><td>Firmware, hardware, build date</td></tr>
+<tr><td class="c">104</td><td>GET_DEVICE_NAME</td><td>Uptime with decimals. The UI fires it after every write as a keepalive.</td></tr>
+<tr><td class="c">17</td><td>SYS_LOG</td><td>Plain-text (not JSON) admin audit log: logins, failed attempts with source IP, setting changes</td></tr>
+</table></div>
+
+<h3>Built-in history (free backfill)</h3>
+<div class="tablewrap"><table>
+<tr><th>cmd</th><th>series</th><th>shape</th></tr>
+<tr><td class="c">1015</td><td>CPU usage % <span class="tag t-hist">~24 h</span></td><td><code>graph_time</code> and <code>graph_usage_rate</code>, comma-separated, ~283 points at 5-minute intervals</td></tr>
+<tr><td class="c">1016</td><td>Device temperature °C <span class="tag t-hist">short</span></td><td>~22 points, irregular ~6-minute spacing. The ring buffer wraps, so the times aren't sorted.</td></tr>
+<tr><td class="c">1014</td><td>Battery % and battery temp <span class="tag t-hist">short</span></td><td><code>graph_capacity</code>, <code>graph_temperature</code>, same times as 1016</td></tr>
+</table></div>
+
+<h2>Live snapshot</h2>
+<p>Values read during the probe:</p>
+<div class="grid">
+  <div class="card"><div class="k">Network</div><div class="v">5G NSA</div><p>Ooredoo TN · PLMN 60503 · bars 5/5</p></div>
+  <div class="card"><div class="k">LTE anchor</div><div class="v">B20+B3+B1</div><p>10+20+20 MHz · RSRP −83 · RSRQ −12 · SINR 14 · CQI 8</p></div>
+  <div class="card"><div class="k">NR leg</div><div class="v">n78 · 100 MHz</div><p>RSRP −81 · RSRQ −11 · SINR 29 · CQI 11 · 2×2 MIMO · rank 2</p></div>
+  <div class="card"><div class="k">Device</div><div class="v">CPU 28% · 47 °C</div><p>Uptime ~23.6 h · RAM 236 MB total · rootfs 100% (read-only, normal)</p></div>
+  <div class="card"><div class="k">Traffic</div><div class="v">19.6 GB / mo</div><p>Session: 1.99 GB down, 117 MB up · connected 40 min</p></div>
+  <div class="card"><div class="k">Clients</div><div class="v">4 on Wi-Fi</div><p>2 × 2.4G (72 Mbps) · 2 × 5G (150 Mbps) · RSSI −28 to −44</p></div>
+</div>
+
+<h2>Gotchas</h2>
+<ul>
+  <li><b>There is no live throughput field.</b> <code>lte_dl_speed</code>, <code>netWanRxRate</code> and <code>lanRxRate</code> exist but are always empty. Diff two readings yourself.</li>
+  <li><b>WAN byte counters are coarse.</b> <code>wan_rx_bytes</code>/<code>wan_tx_bytes</code> move in 1 MiB steps. <code>flow_dl</code>/<code>flow_ul</code> (MB, 2 decimals, so 10 kB resolution) are better for rate math. Poll every 5–10 s and divide the delta by elapsed time.</li>
+  <li><b>Session and monthly counters reset.</b> <code>flow_*</code> resets on reconnect and <code>mon_*</code> on the billing day. Handle negative deltas as resets.</li>
+  <li><b>Carrier aggregation is packed into strings.</b> <code>currentband "20+3+1"</code>, <code>bandwidth "10+20+20"</code>, <code>FREQ "6400+1800+101"</code> and <code>PCI "419+419+419"</code> are parallel <code>+</code>-separated lists, primary cell first.</li>
+  <li><b>Memory math.</b> The UI computes used = total − free − cache from the first three values of <code>memory</code>.</li>
+  <li><b>Fake version.</b> The UI shows <code>fake_version</code> 1.0.0.16. The real build is <code>real_fwversion</code> 1.0.0.24.</li>
+  <li><b>Sensitive fields.</b> <code>cmd 2</code>/<code>211</code> (Wi-Fi config) return the Wi-Fi key in clear text, and the 2.4G SSID is base64-encoded. Don't log those responses.</li>
+</ul>
+
+<h2>Commands a poller must never send</h2>
+<p>Some commands act even when called with <code>method:"GET"</code>. A dashboard has no reason to touch these:</p>
+<div class="tablewrap"><table>
+<tr><th>cmd</th><th>why</th></tr>
+<tr><td class="c">6 · 99 · 112 · 159</td><td>Reboot or factory reset</td></tr>
+<tr><td class="c">116 · 228 · 288 · 342 · 464 · 489</td><td>Network, cell or Wi-Fi scans. These drop or degrade the link while running.</td></tr>
+<tr><td class="c">45 · 46 · 51 · 186 · 187 · 270</td><td>Raw AT and shell commands</td></tr>
+<tr><td class="c">5 · 105 · 106 · 196 · 198 · 239</td><td>Firmware upgrade paths</td></tr>
+<tr><td class="c">249 · 250 · 517 · 539 · 350</td><td>eSIM reset/download, web data clear, self-check, USSD</td></tr>
+<tr><td class="c">101</td><td>Logout. Harmless, but it ends the shared session.</td></tr>
+</table></div>
+
+<h2>Suggested dashboard architecture</h2>
+<div class="flow">
+  <div class="card"><b>Fast loop, no auth</b><p>Every 5 s: <code>133</code> + <code>113</code>. Signal, cell, bands, link state and battery, all without taking the session.</p></div>
+  <div class="card"><b>Slow loop, auth</b><p>Every 30–60 s: <code>1002</code>, <code>1001</code>, <code>1000</code>. Throughput deltas, CPU, temperature, memory, clients and quota. Re-login on <code>NO_AUTH</code>.</p></div>
+  <div class="card"><b>Store</b><p>Write normalized numbers to a time-series DB (Prometheus exporter, InfluxDB or SQLite). On startup, backfill from <code>1015</code>/<code>1016</code>/<code>1014</code>.</p></div>
+  <div class="card"><b>Render</b><p>Grafana or a small web app. Key panels: SINR/RSRP per leg, band and cell changes as annotations, DL/UL rate, monthly quota, temperature, clients by RSSI.</p></div>
+</div>
+<p>To be polite to the UI, pause the authenticated loop whenever the poller gets <code>NO_AUTH</code> right after a successful call. That means someone else just logged in. Back off for a few minutes instead of fighting over the session.</p>
+<p class="mono" style="color:var(--muted);margin-top:28px">Python client: box_client.py in this repo · full cmd map extracted from the web UI bundle (js/app.js)</p>
+</main>
+<script>
+(function(){
+  var b=document.getElementById('tb'),r=document.documentElement;
+  function set(t){r.setAttribute('data-theme',t);try{localStorage.setItem('t',t)}catch(e){}}
+  try{var s=localStorage.getItem('t');if(s)r.setAttribute('data-theme',s)}catch(e){}
+  b.onclick=function(){var cur=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');set(cur==='dark'?'light':'dark')};
+})();
+</script>
+</body>
+</html>

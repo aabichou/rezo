@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__/
+*.pyc
+BoxBar/.build/
+BoxBar/.swiftpm/
+BoxBar/BoxBar.app
